@@ -8,16 +8,17 @@ export const CreatePostSection = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [content, setContent] = useState('');
+  const [visibility, setVisibility] = useState<'public' | 'private'>('public');
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [image, setImage] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const createPostMutation = useMutation({
-    mutationFn: () =>
-      feedApi.createPost({ content, visibility: 'public', image }),
+    mutationFn: () => feedApi.createPost({ content, visibility, image }),
     onSuccess: () => {
       setContent('');
       setImage(null);
+      setVisibility('public');
       if (fileInputRef.current) fileInputRef.current.value = '';
       void queryClient.invalidateQueries({ queryKey: ['feed'] });
     },
@@ -25,14 +26,14 @@ export const CreatePostSection = () => {
 
   return (
     <div className='feed-theme-card create-post-card mb-4 rounded-md border border-[#eceef5] bg-white px-3 pb-4 pt-4 shadow-sm sm:px-6 sm:pb-6 sm:pt-6'>
-      <div className='mb-4 flex items-start'>
+      <div className='mb-4 flex items-start gap-2 sm:gap-3'>
         <ProfileImage
           src={user?.profileImageUrl}
           alt='User'
           className='h-9 w-9 shrink-0 overflow-hidden rounded-full sm:h-10 sm:w-10'
         />
 
-        <div className='relative w-full'>
+        <div className='relative w-full flex-1'>
           <textarea
             className='feed-theme-textarea h-20 w-full resize-none rounded-xl bg-white px-1 pb-3 pt-3 text-sm text-slate-700 outline-none transition sm:h-24 sm:pt-3'
             value={content}
@@ -58,6 +59,18 @@ export const CreatePostSection = () => {
             </label>
           )}
         </div>
+
+        <select
+          value={visibility}
+          onChange={(event) =>
+            setVisibility(event.target.value as 'public' | 'private')
+          }
+          className='mt-1 shrink-0 rounded-md border border-[#dbe2f2] bg-white px-2 py-1 text-[11px] font-medium text-[#55607c] outline-none transition focus:border-[#3478f6]'
+          aria-label='Post visibility'
+        >
+          <option value='public'>Public</option>
+          <option value='private'>Private</option>
+        </select>
       </div>
 
       <input

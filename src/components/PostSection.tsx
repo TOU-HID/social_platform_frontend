@@ -30,6 +30,9 @@ const PostCard = ({ post }: PostCardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editContent, setEditContent] = useState(post.content || '');
+  const [editVisibility, setEditVisibility] = useState<'public' | 'private'>(
+    post.visibility,
+  );
   const [editImage, setEditImage] = useState<File | null>(null);
   const [removeImage, setRemoveImage] = useState(false);
 
@@ -48,6 +51,7 @@ const PostCard = ({ post }: PostCardProps) => {
       feedApi.updatePost({
         postId: post.id,
         content: editContent,
+        visibility: editVisibility,
         image: editImage,
         removeImage,
       }),
@@ -120,6 +124,7 @@ const PostCard = ({ post }: PostCardProps) => {
                     setMenuOpen(false);
                     return;
                   }
+                  setEditVisibility(post.visibility);
                   setEditing(true);
                   setMenuOpen(false);
                 }}
@@ -146,6 +151,20 @@ const PostCard = ({ post }: PostCardProps) => {
               className='w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100'
               rows={4}
             />
+
+            <div>
+              <select
+                value={editVisibility}
+                onChange={(event) =>
+                  setEditVisibility(event.target.value as 'public' | 'private')
+                }
+                className='rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-700 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100'
+                aria-label='Edit post visibility'
+              >
+                <option value='public'>Public</option>
+                <option value='private'>Private</option>
+              </select>
+            </div>
 
             <div className='flex flex-wrap items-center gap-2'>
               <input
@@ -186,6 +205,7 @@ const PostCard = ({ post }: PostCardProps) => {
                 onClick={() => {
                   setEditing(false);
                   setEditContent(post.content || '');
+                  setEditVisibility(post.visibility);
                   setEditImage(null);
                   setRemoveImage(false);
                 }}
