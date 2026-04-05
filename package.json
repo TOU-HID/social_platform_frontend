@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "deploy": "scp -r dist/* touhid@devinshadows.com:/var/www/spt.devinshadows.com/html/",
     "lint": "eslint .",
     "preview": "vite preview"
   },
