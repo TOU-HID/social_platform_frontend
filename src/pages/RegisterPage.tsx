@@ -14,9 +14,11 @@ import darkShape2 from '../assets/images/dark_shape2.svg';
 
 export const RegisterPage = () => {
   const navigate = useNavigate();
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [repeatPassword, setRepeatPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [acceptedTerms, setAcceptedTerms] = useState(true);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -25,7 +27,22 @@ export const RegisterPage = () => {
     event.preventDefault();
     setError('');
 
-    if (password !== repeatPassword) {
+    if (firstName.trim().length < 2) {
+      setError('First name must be at least 2 characters');
+      return;
+    }
+
+    if (lastName.trim().length < 2) {
+      setError('Last name must be at least 2 characters');
+      return;
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return;
+    }
+
+    if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
@@ -37,7 +54,13 @@ export const RegisterPage = () => {
 
     setSubmitting(true);
     try {
-      await authApi.register({ email, password });
+      await authApi.register({
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email,
+        password,
+        confirmPassword,
+      });
       navigate('/login');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed');
@@ -105,6 +128,32 @@ export const RegisterPage = () => {
             <form onSubmit={onSubmit} className='w-full space-y-4'>
               <div>
                 <label className='mb-2 block text-left text-md font-medium text-[#525b88]'>
+                  First Name
+                </label>
+                <input
+                  type='text'
+                  className='h-12 w-full rounded-xl border border-[#e0e4f2] bg-white px-4 text-[#1e2147] outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-100'
+                  value={firstName}
+                  onChange={(event) => setFirstName(event.target.value)}
+                  required
+                />
+              </div>
+
+              <div>
+                <label className='mb-2 block text-left text-md font-medium text-[#525b88]'>
+                  Last Name
+                </label>
+                <input
+                  type='text'
+                  className='h-12 w-full rounded-xl border border-[#e0e4f2] bg-white px-4 text-[#1e2147] outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-100'
+                  value={lastName}
+                  onChange={(event) => setLastName(event.target.value)}
+                  required
+                />
+              </div>
+
+              <div>
+                <label className='mb-2 block text-left text-md font-medium text-[#525b88]'>
                   Email
                 </label>
                 <input
@@ -131,13 +180,13 @@ export const RegisterPage = () => {
 
               <div>
                 <label className='mb-2 block text-left text-md font-medium text-[#525b88]'>
-                  Repeat Password
+                  Confirm Password
                 </label>
                 <input
                   type='password'
                   className='h-12 w-full rounded-xl border border-[#e0e4f2] bg-white px-4 text-[#1e2147] outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-100'
-                  value={repeatPassword}
-                  onChange={(event) => setRepeatPassword(event.target.value)}
+                  value={confirmPassword}
+                  onChange={(event) => setConfirmPassword(event.target.value)}
                   required
                 />
               </div>

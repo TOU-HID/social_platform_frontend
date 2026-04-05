@@ -76,7 +76,7 @@ export const SettingsPage = () => {
         }}
       />
 
-      <main className='mx-auto w-full max-w-[900px] px-4 py-8 sm:px-6'>
+      <main className='mx-auto w-full max-w-[900px] px-4 pb-8 pt-[100px] sm:px-6 lg:pt-[84px]'>
         <section className='rounded-2xl border border-[#e9edf7] bg-white p-6 shadow-sm sm:p-8'>
           <h1 className='text-xl font-semibold text-[#112032] text-center'>
             Settings

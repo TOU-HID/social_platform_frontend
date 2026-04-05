@@ -75,10 +75,11 @@ export const apiRequest = async <T>(
 
 export const authApi = {
   register: (payload: {
-    firstName?: string;
-    lastName?: string;
+    firstName: string;
+    lastName: string;
     email: string;
     password: string;
+    confirmPassword: string;
   }) =>
     apiRequest<{ message: string; user: User }>('/auth/register', {
       method: 'POST',
